@@ -18,6 +18,7 @@ export const login = async (req, res) => {
 			_id: user._id,
 			fullname: user.fullname,
 			username: user.username,
+			gender: user.gender,
 			profilePic: user.profilePic
 		})
 	} catch (error) {
@@ -49,15 +50,18 @@ export const signup = async (req, res) => {
 		}
 		const salt = await bcrypt.genSalt(10)
 		const hashedPassword = await bcrypt.hash(password, salt)
-		let boyPic = `https://avatar-placeholder.iran.liara.run/boy`
-		let girlPic = `https://avatar-placeholder.iran.liara.run/girl`
+		const genderName = gender === 'male' ? 'boy' : 'girl'
+		// const profilePicPre = `https://api.dicebear.com/9.x/pixel-art/svg?seed=`
+		const profilePicPre = `https://avatar.iran.liara.run/public/`
+		const profilePic = `${profilePicPre}${genderName}`
+
 		const newUesr = new User({
 			fullname,
 			username,
 			password: hashedPassword,
 			confirmPassword,
 			gender,
-			profilePic: gender === 'male' ? boyPic : girlPic
+			profilePic: profilePic
 		})
 
 		if (newUesr) {
@@ -75,6 +79,6 @@ export const signup = async (req, res) => {
 			res.status(400).json({ error: 'Invalid user data' })
 		}
 	} catch (error) {
-		return res.status(500).json({ error: 'server error' + error })
+		return res.status(500).json({ error: 'server error ' + error })
 	}
 }

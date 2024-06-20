@@ -1,20 +1,38 @@
-const Conversation = (conversation) => {
+import { useSocketContext } from '@/context/SocketContext.jsx'
+import { avatarPath } from '@/utils/avatarPath.js'
+import useConversation from '@/zustand/useConversation.js'
+
+const Conversation = ({ conversation, emoji, lastIdx }) => {
+	const { selectedConversation, setSelectedConversation } = useConversation()
+	const isSelected = selectedConversation?._id === conversation._id
+	const selectedClass = isSelected ? 'bg-sky-500' : ''
+	const defaultAvatar =
+		'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg'
+	const avatar = `${avatarPath(conversation)}`
+	const { onlineUsers } = useSocketContext()
+	const isOline = onlineUsers.find((id) => id === conversation._id)
+
 	return (
 		<>
-			<div className="flex gap-2 items-center hover:bg-sky-500 rounded p-1 py-2 cursor-pointer">
-				<div className="avatar online">
+			<div
+				onClick={() => setSelectedConversation(conversation)}
+				className={`flex gap-4 items-center hover:bg-sky-500 rounded p-1 py-2 cursor-pointer ${selectedClass}`}
+			>
+				<div className={`avatar ${isOline ? 'online' : ''}`}>
 					<div className="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-						<img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+						<img src={avatar ?? defaultAvatar} />
 					</div>
 				</div>
 				<div className="flex flex-col flex-1">
 					<div className="flex gap-3 justify-between">
-						<h1 className="font-bold text-lg">{conversation.name ?? 'Jone'}</h1>
-						<span className="text-xl">🎃</span>
+						<h1 className="font-bold text-lg text-white">
+							{conversation?.fullname ?? 'Jone'}
+						</h1>
+						<span className="text-xl">{emoji}</span>
 					</div>
 				</div>
 			</div>
-			<div className="divider my-0 py-0 h-1"></div>
+			{!lastIdx && <div className="divider my-0 py-0 h-1"></div>}
 		</>
 	)
 }
