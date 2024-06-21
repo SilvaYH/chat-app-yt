@@ -1,14 +1,13 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import useSignup from '../../hooks/useSignup.js'
 import { GenderCheckbox } from './genderCheckbox.jsx'
 export const Signup = () => {
 	const [inputs, setInputs] = useState({
-		fullname: 'Jone Doe',
-		username: 'Jone',
-		password: '123456',
-		confirmPassword: '123456',
+		fullname: '',
+		username: '',
+		password: '',
+		confirmPassword: '',
 		gender: 'male'
 	})
 	const { signup, loading } = useSignup()
